@@ -1542,6 +1542,7 @@ public class PlayerConnection implements PacketPlayInListener {
             int i;
             int j;
 
+			/*
             for (j = 0; j < 4; ++j) {
                 boolean flag = true;
 
@@ -1559,6 +1560,7 @@ public class PlayerConnection implements PacketPlayInListener {
                     packetplayinupdatesign.f()[j] = "!?";
                 }
             }
+			*/
 
             if (tileentity instanceof TileEntitySign) {
                 j = packetplayinupdatesign.c();

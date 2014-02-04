@@ -38,6 +38,14 @@ public class NetworkManager extends SimpleChannelInboundHandler {
     private PacketListener m;
     private EnumProtocol n;
     private IChatBaseComponent o;
+	
+	
+	
+	
+	private int svr_port; // AAM's modification - server port for auth OwO
+	
+	
+	
 
     public NetworkManager(boolean flag) {
         this.h = flag;
@@ -195,4 +203,25 @@ public class NetworkManager extends SimpleChannelInboundHandler {
     static Channel a(NetworkManager networkmanager) {
         return networkmanager.k;
     }
+
+
+
+
+
+
+
+
+
+
+
+	// AAM's modification - SocketAddress setter for proxy real ip packet
+    public void setSocketAddress(SocketAddress addr) {
+        this.l = addr;
+    }
+	public int getRealServerPort() {
+		return this.svr_port;
+	}
+	public void setRealServerPort(int port) {
+		this.svr_port = port;
+	}
 }

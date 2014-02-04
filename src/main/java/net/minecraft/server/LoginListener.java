@@ -14,6 +14,9 @@ import net.minecraft.util.org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.net.InetSocketAddress; // AAM's modification
+import java.net.UnknownHostException; // AAM's modification
+
 public class LoginListener implements PacketLoginInListener {
 
     private static final AtomicInteger b = new AtomicInteger(0);
@@ -116,6 +119,33 @@ public class LoginListener implements PacketLoginInListener {
             (new ThreadPlayerLookupUUID(this, "User Authenticator #" + b.incrementAndGet())).start();
         }
     }
+
+
+
+
+
+
+
+
+	// AAM's modification - process real ip packet
+    public void a(PacketLoginInRealIP packet) {
+		// it's KEY actually, don't check state now 030
+        //Validate.validState(this.g == EnumProtocolState.HELLO, "Unexpected real ip packet", new Object[0]);
+
+		try {
+			this.networkManager.setSocketAddress(new InetSocketAddress(packet.getClientAddress(), packet.getClientPort()));
+			this.networkManager.setRealServerPort(packet.getServerPort());
+		} catch (UnknownHostException ex) {
+			throw new IllegalStateException("Wrong IP formation!");
+		}
+    }
+
+
+
+
+
+
+
 
     static String a(LoginListener loginlistener) {
         return loginlistener.j;

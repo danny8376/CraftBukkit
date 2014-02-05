@@ -167,13 +167,13 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
 
 
 
-	private List<String> mojangAuthUsernames;
-	private Path forceOnlineListFile = Paths.get("special_settings/forceOnline.txt");
-	long forceOnlineListFileLastDate = 0;
-	private List<String> needAAMMCLoginUsernames;
-	private Path needAAMMCLoginListFile = Paths.get("special_settings/needLogin.txt");
-	long needAAMMCLoginListFileLastDate = 0;
-	
+    private List<String> mojangAuthUsernames;
+    private Path forceOnlineListFile = Paths.get("special_settings/forceOnline.txt");
+    long forceOnlineListFileLastDate = 0;
+    private List<String> needAAMMCLoginUsernames;
+    private Path needAAMMCLoginListFile = Paths.get("special_settings/needLogin.txt");
+    long needAAMMCLoginListFileLastDate = 0;
+    
 
 
 
@@ -199,8 +199,8 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
 
 
 
-		loadMojangAuthUsernames();
-		loadNeedAAMMCLoginUsernames();
+        loadMojangAuthUsernames();
+        loadNeedAAMMCLoginUsernames();
 
 
 
@@ -1431,13 +1431,13 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
     public void loadMojangAuthUsernames() {
         try {
             mojangAuthUsernames = java.nio.file.Files.readAllLines(forceOnlineListFile, StandardCharsets.UTF_8);
-			forceOnlineListFileLastDate = forceOnlineListFile.toFile().lastModified();
+            forceOnlineListFileLastDate = forceOnlineListFile.toFile().lastModified();
         } catch (IOException ioe) {
         }
     }
 
     public boolean shouldMojangAuth(String username) {
-		if (forceOnlineListFile.toFile().lastModified() != forceOnlineListFileLastDate) loadMojangAuthUsernames();
+        if (forceOnlineListFile.toFile().lastModified() != forceOnlineListFileLastDate) loadMojangAuthUsernames();
         return this.getOnlineMode() || mojangAuthUsernames.contains(username);
     }
 /*
@@ -1449,46 +1449,46 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
     }
 
     public boolean addMojangAuthUsername(String username) {
-		if (mojangAuthUsernames.contains(username)) {
-			mojangAuthUsernames.add(username);
-	        try {
-		        writeMojangAuthUsernames();
-			} catch (IOException ioe) {
-				mojangAuthUsernames.remove(username);
-				return false;
-			}
-		}
-		return true;
+        if (mojangAuthUsernames.contains(username)) {
+            mojangAuthUsernames.add(username);
+            try {
+                writeMojangAuthUsernames();
+            } catch (IOException ioe) {
+                mojangAuthUsernames.remove(username);
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean removeMojangAuthUsername(String username) {
-		if (mojangAuthUsernames.contains(username)) {
-			mojangAuthUsernames.remove(username);
-	        try {
-		        writeMojangAuthUsernames();
-			} catch (IOException ioe) {
-				mojangAuthUsernames.add(username);
-				return false;
-			}
-		}
-		return true;
+        if (mojangAuthUsernames.contains(username)) {
+            mojangAuthUsernames.remove(username);
+            try {
+                writeMojangAuthUsernames();
+            } catch (IOException ioe) {
+                mojangAuthUsernames.add(username);
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean isMojangAuthUsername(String username) {
-		return mojangAuthUsernames.contains(username);
+        return mojangAuthUsernames.contains(username);
     }
 */
 
     public void loadNeedAAMMCLoginUsernames() {
         try {
             needAAMMCLoginUsernames = java.nio.file.Files.readAllLines(needAAMMCLoginListFile, StandardCharsets.UTF_8);
-			needAAMMCLoginListFileLastDate = needAAMMCLoginListFile.toFile().lastModified();
+            needAAMMCLoginListFileLastDate = needAAMMCLoginListFile.toFile().lastModified();
         } catch (IOException ioe) {
         }
     }
 
     public boolean needAAMMCLogin(String username) {
-		if (needAAMMCLoginListFile.toFile().lastModified() != needAAMMCLoginListFileLastDate) loadNeedAAMMCLoginUsernames();
+        if (needAAMMCLoginListFile.toFile().lastModified() != needAAMMCLoginListFileLastDate) loadNeedAAMMCLoginUsernames();
         return needAAMMCLoginUsernames.contains(username);
     }
 }

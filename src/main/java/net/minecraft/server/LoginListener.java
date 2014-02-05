@@ -102,13 +102,13 @@ public class LoginListener implements PacketLoginInListener {
 
 
 
-	// AAM's modification - check is loopback
+    // AAM's modification - check is loopback
     public boolean isLoopback() {
-		try {
-			return ((InetSocketAddress)this.networkManager.getSocketAddress()).getAddress().isLoopbackAddress();
-		} catch (Exception ex) {
-			return false;
-		}
+        try {
+            return ((InetSocketAddress)this.networkManager.getSocketAddress()).getAddress().isLoopbackAddress();
+        } catch (Exception ex) {
+            return false;
+        }
     }
     public void loginStartCallback() {
         this.g = EnumProtocolState.KEY;
@@ -153,17 +153,17 @@ public class LoginListener implements PacketLoginInListener {
 
 
 
-	// AAM's modification - process real ip packet
+    // AAM's modification - process real ip packet
     public void a(PacketLoginInRealIP packet) {
-		// it's KEY actually, don't check state now 030
+        // it's KEY actually, don't check state now 030
         //Validate.validState(this.g == EnumProtocolState.HELLO, "Unexpected real ip packet", new Object[0]);
 
-		try {
-			this.networkManager.setSocketAddress(new InetSocketAddress(packet.getClientAddress(), packet.getClientPort()));
-			this.networkManager.setRealServerPort(packet.getServerPort());
-		} catch (UnknownHostException ex) {
-			throw new IllegalStateException("Wrong IP formation!");
-		}
+        try {
+            this.networkManager.setSocketAddress(new InetSocketAddress(packet.getClientAddress(), packet.getClientPort()));
+            this.networkManager.setRealServerPort(packet.getServerPort());
+        } catch (UnknownHostException ex) {
+            throw new IllegalStateException("Wrong IP formation!");
+        }
     }
 
 

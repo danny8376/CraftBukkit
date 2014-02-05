@@ -38,19 +38,19 @@ public class NetworkManager extends SimpleChannelInboundHandler {
     private PacketListener m;
     private EnumProtocol n;
     private IChatBaseComponent o;
-	
-	
-	
-	
-	private int svr_port; // AAM's modification - server port for auth OwO
-	private boolean is_proxied; // AAM's modification
-	
-	
-	
+    
+    
+    
+    
+    private int svr_port; // AAM's modification - server port for auth OwO
+    private boolean is_proxied; // AAM's modification
+    
+    
+    
 
     public NetworkManager(boolean flag) {
         this.h = flag;
-		this.is_proxied = false; // AAM's modification
+        this.is_proxied = false; // AAM's modification
     }
 
     public void channelActive(ChannelHandlerContext channelhandlercontext) throws Exception { // CraftBukkit - throws Exception
@@ -216,18 +216,18 @@ public class NetworkManager extends SimpleChannelInboundHandler {
 
 
 
-	// AAM's modification - SocketAddress setter for proxy real ip packet
+    // AAM's modification - SocketAddress setter for proxy real ip packet
     public void setSocketAddress(SocketAddress addr) {
         this.l = addr;
-		this.is_proxied = true;
+        this.is_proxied = true;
     }
-	public boolean isProxied() {
-		return this.is_proxied;
-	}
-	public int getRealServerPort() {
-		return this.svr_port;
-	}
-	public void setRealServerPort(int port) {
-		this.svr_port = port;
-	}
+    public boolean isProxied() {
+        return this.is_proxied;
+    }
+    public int getRealServerPort() {
+        return this.svr_port;
+    }
+    public void setRealServerPort(int port) {
+        this.svr_port = port;
+    }
 }

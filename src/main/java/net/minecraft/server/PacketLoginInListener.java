@@ -1,7 +1,7 @@
 package net.minecraft.server;
 
-public abstract interface PacketLoginInListener extends PacketListener {
-    public abstract void a(PacketLoginInStart paramPacketLoginInStart);
-    public abstract void a(PacketLoginInEncryptionBegin paramPacketLoginInEncryptionBegin);
-    public abstract void a(PacketLoginInRealIP packet); // AAM's modification - process real ip packet
+public interface PacketLoginInListener extends PacketListener {
+    void a(PacketLoginInStart packetlogininstart);
+    void a(PacketLoginInEncryptionBegin packetlogininencryptionbegin);
+    void a(PacketLoginInRealIP packet); // AAM's modification - process real ip packet
 }

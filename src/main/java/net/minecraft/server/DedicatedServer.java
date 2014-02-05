@@ -88,6 +88,21 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
         this.setTexturePack(this.propertyManager.getString("resource-pack", ""));
         this.setMotd(this.propertyManager.getString("motd", "A Minecraft Server"));
         this.setForceGamemode(this.propertyManager.getBoolean("force-gamemode", false));
+        
+        
+        
+        // AAM's modification start - auth database settings
+        this.setAuthDBURL(this.propertyManager.getString("authdb-mysql-url", "localhost/minecraft"));
+        this.setAuthDBUsername(this.propertyManager.getString("authdb-mysql-username", "minecraft"));
+        this.setAuthDBPassword(this.propertyManager.getString("authdb-mysql-password", "password"));
+        // update info url
+        this.setUpdateInfoURL(this.propertyManager.getString("update-info-url", "http://example.com/update"));
+        // motd for old clients (english only...)
+        this.setOldMotd(this.propertyManager.getString("old-motd", "A Minecraft Server"));
+        // AAM's modification end
+        
+        
+        
         this.d(this.propertyManager.getInt("player-idle-timeout", 0));
         if (this.propertyManager.getInt("difficulty", 1) < 0) {
             this.propertyManager.a("difficulty", Integer.valueOf(0));

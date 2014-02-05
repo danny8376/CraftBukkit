@@ -41,53 +41,6 @@ import org.bukkit.event.server.RemoteServerCommandEvent;
 import org.bukkit.event.world.WorldSaveEvent;
 // CraftBukkit end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.OpenOption;
-import java.nio.file.StandardOpenOption;
-//import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public abstract class MinecraftServer implements ICommandListener, Runnable, IMojangStatistics {
 
     private static final Logger h = LogManager.getLogger();
@@ -150,64 +103,20 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
     // CraftBukkit end
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private List<String> mojangAuthUsernames;
-    private Path forceOnlineListFile = Paths.get("special_settings/forceOnline.txt");
-    long forceOnlineListFileLastDate = 0;
-    private List<String> needAAMMCLoginUsernames;
-    private Path needAAMMCLoginListFile = Paths.get("special_settings/needLogin.txt");
-    long needAAMMCLoginListFileLastDate = 0;
     
-
-
-
-
-
-
-
-
-
-
-
-
+    // AAM's modification start - new properties
+    private String authDBURL;
+    private String authDBUsername;
+    private String authDBPassword;
+    private String updateInfoURL;
+    private String oldMotd;
+    // AAM's modification end
 
 
 
     public MinecraftServer(OptionSet options, Proxy proxy) { // CraftBukkit - signature file -> OptionSet
         i = this;
         this.c = proxy;
-
-
-
-
-
-
-
-        loadMojangAuthUsernames();
-        loadNeedAAMMCLoginUsernames();
-
-
-
-
-
-
-
         // this.universe = file1; // CraftBukkit
         this.o = new ServerConnection(this);
         this.n = new CommandDispatcher();
@@ -1405,90 +1314,39 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public void loadMojangAuthUsernames() {
-        try {
-            mojangAuthUsernames = java.nio.file.Files.readAllLines(forceOnlineListFile, StandardCharsets.UTF_8);
-            forceOnlineListFileLastDate = forceOnlineListFile.toFile().lastModified();
-        } catch (IOException ioe) {
-        }
+    // AAM's modification new properties
+    public String getAuthDBURL() {
+        return this.authDBURL;
+    }
+    public void setAuthDBURL(String authDBURL) {
+        this.authDBURL = authDBURL;
     }
 
-    public boolean shouldMojangAuth(String username) {
-        if (forceOnlineListFile.toFile().lastModified() != forceOnlineListFileLastDate) loadMojangAuthUsernames();
-        return this.getOnlineMode() || mojangAuthUsernames.contains(username);
+    public String getAuthDBUsername() {
+        return this.authDBUsername;
     }
-/*
-    private void writeMojangAuthUsernames() throws IOException {
-        try {
-            java.nio.file.Files.write(forceOnlineListFile, mojangAuthUsernames, StandardCharsets.UTF_8, StandardOpenOption.CREATE);
-        } catch (IOException ioe) {
-        }
+    public void setAuthDBUsername(String authDBUsername) {
+        this.authDBUsername = authDBUsername;
     }
 
-    public boolean addMojangAuthUsername(String username) {
-        if (mojangAuthUsernames.contains(username)) {
-            mojangAuthUsernames.add(username);
-            try {
-                writeMojangAuthUsernames();
-            } catch (IOException ioe) {
-                mojangAuthUsernames.remove(username);
-                return false;
-            }
-        }
-        return true;
+    public String getAuthDBPassword() {
+        return this.authDBPassword;
+    }
+    public void setAuthDBPassword(String authDBPassword) {
+        this.authDBPassword = authDBPassword;
     }
 
-    public boolean removeMojangAuthUsername(String username) {
-        if (mojangAuthUsernames.contains(username)) {
-            mojangAuthUsernames.remove(username);
-            try {
-                writeMojangAuthUsernames();
-            } catch (IOException ioe) {
-                mojangAuthUsernames.add(username);
-                return false;
-            }
-        }
-        return true;
+    public String getUpdateInfoURL() {
+        return this.updateInfoURL;
+    }
+    public void setUpdateInfoURL(String updateInfoURL) {
+        this.updateInfoURL = updateInfoURL;
     }
 
-    public boolean isMojangAuthUsername(String username) {
-        return mojangAuthUsernames.contains(username);
+    public String getOldMotd() {
+        return this.oldMotd;
     }
-*/
-
-    public void loadNeedAAMMCLoginUsernames() {
-        try {
-            needAAMMCLoginUsernames = java.nio.file.Files.readAllLines(needAAMMCLoginListFile, StandardCharsets.UTF_8);
-            needAAMMCLoginListFileLastDate = needAAMMCLoginListFile.toFile().lastModified();
-        } catch (IOException ioe) {
-        }
-    }
-
-    public boolean needAAMMCLogin(String username) {
-        if (needAAMMCLoginListFile.toFile().lastModified() != needAAMMCLoginListFileLastDate) loadNeedAAMMCLoginUsernames();
-        return needAAMMCLoginUsernames.contains(username);
+    public void setOldMotd(String oldMotd) {
+        this.oldMotd = oldMotd;
     }
 }

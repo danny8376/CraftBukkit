@@ -95,10 +95,36 @@ public class LoginListener implements PacketLoginInListener {
         Validate.validState(enumprotocol1 == EnumProtocol.PLAY || enumprotocol1 == EnumProtocol.LOGIN, "Unexpected protocol " + enumprotocol1, new Object[0]);
     }
 
+
+
+
+
+
+
+
+	// AAM's modification - check is loopback
+    public boolean isLoopback() {
+		try {
+			return ((InetSocketAddress)this.networkManager.getSocketAddress()).getAddress().isLoopbackAddress();
+		} catch (Exception ex) {
+			return false;
+		}
+    }
+    public void loginStartCallback() {
+        this.g = EnumProtocolState.KEY;
+        this.networkManager.handle(new PacketLoginOutEncryptionBegin(this.j, this.server.I().getPublic(), this.e), new GenericFutureListener[0]);
+    }
+
+
+
+
+
+
+
     public void a(PacketLoginInStart packetlogininstart) {
         Validate.validState(this.g == EnumProtocolState.HELLO, "Unexpected hello packet", new Object[0]);
         this.i = packetlogininstart.c();
-        if (this.server.getOnlineMode() && !this.networkManager.c()) {
+        if (this.server.getOnlineMode() && !this.networkManager.c() && (!isLoopback() || this.networkManager.isProxied())) { // AAM's modification - skip auth when connecting with loopback (non-proxy)
             this.g = EnumProtocolState.KEY;
             this.networkManager.handle(new PacketLoginOutEncryptionBegin(this.j, this.server.I().getPublic(), this.e), new GenericFutureListener[0]);
         } else {

@@ -41,6 +41,14 @@ import org.bukkit.event.server.RemoteServerCommandEvent;
 import org.bukkit.event.world.WorldSaveEvent;
 // CraftBukkit end
 
+
+
+import java.net.InetAddress; // AAM's modification start
+import java.net.UnknownHostException; // AAM's modification start
+
+
+
+
 public abstract class MinecraftServer implements ICommandListener, Runnable, IMojangStatistics {
 
     private static final Logger h = LogManager.getLogger();
@@ -110,6 +118,7 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
     private String authDBPassword;
     private String updateInfoURL;
     private String oldMotd;
+    private InetAddress[] vaild_proxies;
     // AAM's modification end
 
 
@@ -1348,5 +1357,25 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
     }
     public void setOldMotd(String oldMotd) {
         this.oldMotd = oldMotd;
+    }
+    
+    public InetAddress[] getVaildProxies() {
+        return this.vaild_proxies;
+    }
+    public void setVaildProxies(String proxies) {
+        if (proxies.trim().isEmpty()) {
+            this.vaild_proxies = null;
+            return;
+        }
+        String[] addrs = proxies.split("\\s*,\\s*");
+        int len = addrs.length;
+        try {
+            this.vaild_proxies = new InetAddress[len];
+            for(int i = 0;i < len;i++) {
+                this.vaild_proxies[i] = InetAddress.getByName(addrs[i]);
+            }
+        } catch (UnknownHostException ex) {
+            this.vaild_proxies = null;
+        }
     }
 }

@@ -99,6 +99,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
         this.setUpdateInfoURL(this.propertyManager.getString("update-info-url", "http://example.com/update"));
         // motd for old clients (english only...)
         this.setOldMotd(this.propertyManager.getString("old-motd", "A Minecraft Server"));
+        this.setVaildProxies(this.propertyManager.getString("vaild-proxies", ""));
         // AAM's modification end
         
         

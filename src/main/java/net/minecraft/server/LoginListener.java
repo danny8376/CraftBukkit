@@ -14,6 +14,7 @@ import net.minecraft.util.org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.net.InetAddress; // AAM's modification
 import java.net.InetSocketAddress; // AAM's modification
 import java.net.UnknownHostException; // AAM's modification
 
@@ -134,10 +135,15 @@ public class LoginListener implements PacketLoginInListener {
         }
         // AAM's modification end
         
-        
-        if (this.server.getOnlineMode() && !this.networkManager.c() && (!isLoopback() || this.networkManager.isProxied())) { // AAM's modification - skip auth when connecting with loopback (non-proxy)
+
+        if (this.server.getOnlineMode() && !this.networkManager.c() && (!this.isLoopback() || this.networkManager.isProxied())) { // AAM's modification - skip auth when connecting with loopback (non-proxy)
+            // AAM's modification start - custom auth
+            //*
             this.g = EnumProtocolState.KEY;
             this.networkManager.handle(new PacketLoginOutEncryptionBegin(this.j, this.server.I().getPublic(), this.e), new GenericFutureListener[0]);
+            //*/
+            // start custom auth
+            // AAM's modification end
         } else {
             this.g = EnumProtocolState.READY_TO_ACCEPT;
         }
@@ -164,10 +170,25 @@ public class LoginListener implements PacketLoginInListener {
 
 
 
+    // AAM's modification - continue to do Mojang Auth
+    public boolean validProxy() {
+        if (this.networkManager.isProxied()) return false; // already proxied -- weird
+        InetAddress[] proxies = this.server.getVaildProxies();
+        if (proxies == null) return false; // no proxies allowed
+        try {
+            InetAddress addr = ((InetSocketAddress)this.networkManager.getSocketAddress()).getAddress();
+            for (InetAddress proxy : proxies) {
+                if (proxy.equals(addr)) return true;
+            }
+        } catch (Exception ex) { } // unable to get proxy address
+        return false;
+    }
     // AAM's modification - process real ip packet
     public void a(PacketLoginInRealIP packet) {
         // it's KEY actually, don't check state now 030
         //Validate.validState(this.g == EnumProtocolState.HELLO, "Unexpected real ip packet", new Object[0]);
+        
+        Validate.validState(this.validProxy(), "Invalid proxy!", new Object[0]);
 
         try {
             this.networkManager.setSocketAddress(new InetSocketAddress(packet.getClientAddress(), packet.getClientPort()));

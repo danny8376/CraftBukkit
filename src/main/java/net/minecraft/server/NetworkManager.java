@@ -38,15 +38,15 @@ public class NetworkManager extends SimpleChannelInboundHandler {
     private PacketListener m;
     private EnumProtocol n;
     private IChatBaseComponent o;
-    
-    
-    
-    
+
+
+
+
     private int svr_port; // AAM's modification - server port for auth OwO
     private boolean is_proxied; // AAM's modification
-    
-    
-    
+
+
+
 
     public NetworkManager(boolean flag) {
         this.h = flag;

@@ -127,22 +127,33 @@ public class LoginListener implements PacketLoginInListener {
         Validate.validState(this.g == EnumProtocolState.HELLO, "Unexpected hello packet", new Object[0]);
         this.i = packetlogininstart.c();
         
-        
-        // AAM's modification start - check player name
+        // AAM's modification start
+        // check player name
         String name = this.i.getName();
         if (name == null || !name.matches("^[a-zA-Z0-9_]+$")) {
             this.disconnect("Invalid username!\n如為新進服者 遊戲ID僅允許 \"半形\" 英數 和 \"_\" 之混合\n如為舊玩家請找管理員處理");
+            return;
         }
-        // AAM's modification end
-        
 
-        if (this.server.getOnlineMode() && !this.networkManager.c() && (!this.isLoopback() || this.networkManager.isProxied())) { // AAM's modification - skip auth when connecting with loopback (non-proxy)
-            // AAM's modification start - custom auth
-            //*
+        // skip auth when connecting with loopback (non-proxy)
+        if (this.isLoopback() && !this.networkManager.isProxied()) {
+            this.g = EnumProtocolState.READY_TO_ACCEPT;
+            return;
+        }
+
+        // kick blocked client
+        if (this.server.loginBlockingManager.checkBlocked(this.networkManager.getSocketAddress())) {
+            this.disconnect(this.server.loginBlockingManager.getKickMessage(this.networkManager.getSocketAddress()));
+            return;
+        }
+        
+        if (this.server.getOnlineMode() && !this.networkManager.c()) {
+            /*
             this.g = EnumProtocolState.KEY;
             this.networkManager.handle(new PacketLoginOutEncryptionBegin(this.j, this.server.I().getPublic(), this.e), new GenericFutureListener[0]);
-            //*/
+            */
             // start custom auth
+            (new ThreadAAMsAuth(this, "AAM's Authenticator #" + b.incrementAndGet())).start();
             // AAM's modification end
         } else {
             this.g = EnumProtocolState.READY_TO_ACCEPT;
@@ -230,6 +241,11 @@ public class LoginListener implements PacketLoginInListener {
     }
 
     static EnumProtocolState a(LoginListener loginlistener, EnumProtocolState enumprotocolstate) {
+        // AAM's modification start - reset block status when login successful
+        if (enumprotocolstate == EnumProtocolState.READY_TO_ACCEPT) {
+            loginlistener.server.loginBlockingManager.clearBlock(loginlistener.networkManager.getSocketAddress());
+        }
+        // AAM's modification end
         return loginlistener.g = enumprotocolstate;
     }
 }

@@ -43,9 +43,13 @@ import org.bukkit.event.world.WorldSaveEvent;
 
 
 
-import java.net.InetAddress; // AAM's modification start
-import java.net.UnknownHostException; // AAM's modification start
-
+// AAM's modification start
+import java.sql.DriverManager;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+// AAM's modification end
 
 
 
@@ -113,6 +117,7 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
 
     
     // AAM's modification start - new properties
+    public static LoginBlockingManager loginBlockingManager = new LoginBlockingManager();
     private String authDBURL;
     private String authDBUsername;
     private String authDBPassword;
@@ -1324,25 +1329,17 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
 
 
     // AAM's modification new properties
-    public String getAuthDBURL() {
-        return this.authDBURL;
-    }
     public void setAuthDBURL(String authDBURL) {
-        this.authDBURL = authDBURL;
-    }
-
-    public String getAuthDBUsername() {
-        return this.authDBUsername;
+        this.authDBURL = "jdbc:mysql://" + authDBURL;
     }
     public void setAuthDBUsername(String authDBUsername) {
         this.authDBUsername = authDBUsername;
     }
-
-    public String getAuthDBPassword() {
-        return this.authDBPassword;
-    }
     public void setAuthDBPassword(String authDBPassword) {
         this.authDBPassword = authDBPassword;
+    }
+    public Connection createAuthDBConnetion() throws SQLException {
+        return DriverManager.getConnection(this.authDBURL, this.authDBUsername, this.authDBPassword);
     }
 
     public String getUpdateInfoURL() {

@@ -46,18 +46,20 @@ class ThreadAAMsAuth extends Thread {
         String player_name = LoginListener.d(this.a).getName();
         
         try {
-            boolean guest = true, online = true;
+            boolean guest = true, online = true, legacy = false;
             int auth_port = 0;
-            
+            String dns = null;
             
             Connection conn = LoginListener.b(this.a).createAuthDBConnetion();
-            PreparedStatement authQuery = conn.prepareStatement("SELECT online, port FROM player_auth WHERE name = ?");
+            PreparedStatement authQuery = conn.prepareStatement("SELECT online, legacy, port, dns FROM player_auth WHERE name = ?");
             authQuery.setString(1, player_name);
             ResultSet result = authQuery.executeQuery();
             if (result.first()) { // found player info
                 guest = false;
                 online = result.getBoolean(1);
-                auth_port = result.getInt(2);
+                legacy = result.getBoolean(2);
+                auth_port = result.getInt(3);
+                dns = result.getString(4);
             }
             
             if (guest) {
@@ -75,7 +77,7 @@ class ThreadAAMsAuth extends Thread {
             } else {
                 if (login_port == 25565) { // offical port OwO
                     this.kick(0);
-                } else if (login_port == auth_port) { // correct
+                } else if (login_port == auth_port || (legacy && login_port == 25575)) { // correct
                     // add player permission - make player
                     this.issueCommand("addplayer " + player_name);
                     // logged in
